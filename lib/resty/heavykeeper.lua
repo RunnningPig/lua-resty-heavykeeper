@@ -20,6 +20,10 @@ local _MT = { __index = _M }
 
 
 function _M.new(k, opts)
+    if k <= 0 then
+        return nil, "k too small"
+    end
+
     local opts = opts or {}
     local width = opts.width or 8
     local depth = opts.depth or 7
