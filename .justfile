@@ -41,6 +41,12 @@ export LUA_CPATH := DEBUG_DIR + "/?.so;" + env_var_or_default("LUA_CPATH", "")
 test:
     prove -r t/
 
+export TEST_NGINX_VALGRIND := '--num-callers=100 -q --tool=memcheck --leak-check=full --show-possibly-lost=no --gen-suppressions=all --suppressions=valgrind.suppress --track-origins=yes'
+export TEST_NGINX_USE_VALGRIND := '1'
+valgrind:
+    prove -r t/ 2>&1 | tee /dev/stderr | grep -q "match-leak-kinds: definite" && exit 1 || exit 0
+
+
 cbindgen:
     #!/usr/bin/env bash
     set -euxo pipefail
