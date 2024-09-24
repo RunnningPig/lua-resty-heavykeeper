@@ -44,19 +44,19 @@ function _M.add(self, item)
 end
 
 function _M.query(self, item)
-    local ok = clib.topk_query(self.topk, item, #item)
-    return ok
+    local topking = clib.topk_query(self.topk, item, #item)
+    return topking
 end
 
 function _M.list(self)
-    local list = new_tab(self.k, 0)
+    local items = new_tab(self.k, 0)
     local cb = function(item_ptr, item_len)
         local item = ffi_str(item_ptr, item_len)
-        insert_tab(list, item)
+        insert_tab(items, item)
         return clib.TOPK_ITER_CONTINUE;
     end
     clib.topk_list_foreach(self.topk, cb, nil)
-    return list
+    return items
 end
 
 return _M
