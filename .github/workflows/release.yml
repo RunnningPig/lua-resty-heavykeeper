@@ -1,0 +1,40 @@
+name: release
+
+# Only do the release on x.y.z tags.
+on:
+  push:
+    tags:
+    - "v[0-9]+.[0-9]+.[0-9]+"
+
+# We need this to be able to create releases.
+permissions:
+  contents: write
+
+jobs:
+  # The create-release job runs purely to initialize the GitHub release itself,
+  # and names the release after the `x.y.z` tag that was pushed.
+  create-release:
+    name: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get the release version from the tag
+        shell: bash
+        if: env.VERSION == ''
+        run: |
+          version=$(echo ${{ github.ref_name }} | cut -c 2-)
+          echo "VERSION=${version}" >> $GITHUB_ENV
+      - name: Show the version
+        run: |
+          echo "version is: $VERSION"
+      - name: Check that tag version and library version are the same
+        shell: bash
+        run: |
+          if ! grep -q "_VERSION = \"$VERSION\"" lib/resty/heavykeeper.lua; then
+            echo "version does not match lib/resty/heavykeeper.lua" >&2
+            exit 1
+          fi
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create v$VERSION --draft --verify-tag --title v$VERSION
