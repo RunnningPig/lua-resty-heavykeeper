@@ -14,7 +14,7 @@ local topk_free = cdefs.topk_free
 
 
 local _M = {
-    _VERSION = "0.1"
+    _VERSION = "0.1.0"
 }
 local _MT = { __index = _M }
 
