@@ -57,9 +57,9 @@ Checks whether an item is one of Top-K items.
 
 ### list
 
-`syntax: items = topk:list()`
+`syntax: items = topk:list(res?)`
 
-Return full list of items in Top K list.
+Return full list of items in Top K list. An optional `res` argument can be used to reuse the table returned by this method.
 
 [Back to TOC](#table-of-contents)
 
