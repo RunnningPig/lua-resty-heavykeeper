@@ -48,15 +48,17 @@ function _M.query(self, item)
     return topking
 end
 
-function _M.list(self)
-    local items = new_tab(self.k, 0)
+function _M.list(self, res)
+    if not res then
+        res = new_tab(self.k, 0)
+    end
     local cb = function(item_ptr, item_len)
         local item = ffi_str(item_ptr, item_len)
-        insert_tab(items, item)
+        insert_tab(res, item)
         return clib.TOPK_ITER_CONTINUE;
     end
     clib.topk_list_foreach(self.topk, cb, nil)
-    return items
+    return res
 end
 
 return _M
