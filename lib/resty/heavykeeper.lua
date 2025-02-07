@@ -52,12 +52,18 @@ function _M.list(self, res)
     if not res then
         res = new_tab(self.k, 0)
     end
+
+    local i = 0
     local cb = function(item_ptr, item_len)
         local item = ffi_str(item_ptr, item_len)
-        insert_tab(res, item)
+        i = i + 1
+        res[i] = item
         return clib.TOPK_ITER_CONTINUE;
     end
     clib.topk_list_foreach(self.topk, cb, nil)
+
+    res[i + 1] = nil
+
     return res
 end
 
